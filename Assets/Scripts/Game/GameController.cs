@@ -18,13 +18,13 @@ namespace Assets.Scripts.Game
                     Enumerable.Range(0, width + 2).
                         Select(column =>
                            new Cell(row, column)).
-                    ToArray()).
+                        ToArray()).
                 ToArray();
 
             this.selectedCells = new Subject<IEnumerable<Cell>>();
         }
 
-        public IObservable<IEnumerable<Cell>> SelectedCells
+        public IObservable<IEnumerable<Cell>> MergedCells
         {
             get
             {
@@ -44,7 +44,16 @@ namespace Assets.Scripts.Game
                 this.Cells[cell.Row][cell.Column].Color = cell.Color;
 
             foreach (var cell in cells)
-                this.CheckColors(cell, new[] { cell });
+            {
+                var allCells = this.CheckColors(cell, new[] { cell }).ToArray();
+                var mergedCells = allCells.Distinct();
+                if (mergedCells.Count() > 2)
+                {
+                    foreach (var selectedCell in mergedCells)
+                        this.Cells[selectedCell.Row][selectedCell.Column].Color = Color.black;
+                    this.selectedCells.OnNext(mergedCells);
+                }
+            }
         }
 
         Vector2[] directions = new Vector2[] {
@@ -54,7 +63,7 @@ namespace Assets.Scripts.Game
             Vector2.right
         };
 
-        private void CheckColors(Cell cell, IEnumerable<Cell> previouslyCells)
+        private IEnumerable<Cell> CheckColors(Cell cell, IEnumerable<Cell> previouslyCells)
         {
             var cellsWithSameColor = new List<Cell>();
             foreach (var direction in this.directions)
@@ -71,15 +80,17 @@ namespace Assets.Scripts.Game
             {
                 foreach (var newCell in newCells)
                 {
-                    this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells));
+                    var cellsToMerge = this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells));
+                    foreach (var cellToMerge in cellsToMerge)
+                        yield return cellToMerge;
                 }
             }
-            else if (previouslyCells.Count() > 2)
+            else
             {
-                foreach (var selectedCell in previouslyCells)
-                    this.Cells[selectedCell.Row][selectedCell.Column].Color = Color.black;
-                this.selectedCells.OnNext(previouslyCells);
+                foreach (var cellToMerge in previouslyCells)
+                    yield return cellToMerge;
             }
+
         }
     }
 }
