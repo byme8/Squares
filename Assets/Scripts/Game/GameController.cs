@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UniRx;
 using UnityEngine;
 
@@ -10,6 +8,27 @@ namespace Assets.Scripts.Game
     public class GameController
     {
         private readonly Subject<IEnumerable<Cell>> selectedCells;
+
+        private Vector2[] directions = new Vector2[] {
+            Vector2.up,
+            Vector2.down,
+            Vector2.left,
+            Vector2.right
+        };
+
+        public Cell[][] Cells
+        {
+            get;
+            private set;
+        }
+
+        public IObservable<IEnumerable<Cell>> MergedCells
+        {
+            get
+            {
+                return this.selectedCells.AsObservable();
+            }
+        }
 
         public GameController(int height, int width)
         {
@@ -22,20 +41,6 @@ namespace Assets.Scripts.Game
                 ToArray();
 
             this.selectedCells = new Subject<IEnumerable<Cell>>();
-        }
-
-        public IObservable<IEnumerable<Cell>> MergedCells
-        {
-            get
-            {
-                return this.selectedCells.AsObservable();
-            }
-        }
-
-        public Cell[][] Cells
-        {
-            get;
-            private set;
         }
 
         public void Turn(IEnumerable<Cell> cells)
@@ -55,13 +60,6 @@ namespace Assets.Scripts.Game
                 }
             }
         }
-
-        Vector2[] directions = new Vector2[] {
-            Vector2.up,
-            Vector2.down,
-            Vector2.left,
-            Vector2.right
-        };
 
         private IEnumerable<Cell> CheckColors(Cell cell, IEnumerable<Cell> previouslyCells)
         {
@@ -90,7 +88,6 @@ namespace Assets.Scripts.Game
                 foreach (var cellToMerge in previouslyCells)
                     yield return cellToMerge;
             }
-
         }
     }
 }
