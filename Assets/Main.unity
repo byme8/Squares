@@ -632,7 +632,7 @@ GameObject:
   - component: {fileID: 876297129}
   - component: {fileID: 876297128}
   m_Layer: 0
-  m_Name: UI
+  m_Name: ColorsUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1329,7 +1329,7 @@ GameObject:
   - component: {fileID: 2106563953}
   - component: {fileID: 2106563952}
   m_Layer: 0
-  m_Name: Hints
+  m_Name: InfoUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

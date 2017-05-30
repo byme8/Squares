@@ -10,20 +10,6 @@ namespace Squares.Game
 {
     public class ColorsManager : Singletone<ColorsManager>
     {
-        public static Color Empty = new Color32(218, 218, 218, 255);
-
-        private Color[] acceptableColors = new[] 
-        {
-            Color.blue,
-            Color.red,
-            Color.yellow,
-            Color.green
-            //,
-            //Color.gray,
-            //Color.black,
-            //Color.cyan,
-        };
-
         private Subject<IEnumerable<Color>> newColors = new Subject<IEnumerable<Color>>();
 
         public Color[] Colors
@@ -40,7 +26,6 @@ namespace Squares.Game
             }
         }
 
-
         public Color[] NextColors
         {
             get;
@@ -54,7 +39,7 @@ namespace Squares.Game
         public void Next()
         {
             this.Colors = this.NextColors;
-            this.NextColors = Enumerable.Range(0, 3).Select(_ => this.acceptableColors.Random()).ToArray();
+            this.NextColors = Enumerable.Range(0, 3).Select(_ => CellColors.GridColors.Random()).ToArray();
 
             if (this.Colors == null)
                 return;

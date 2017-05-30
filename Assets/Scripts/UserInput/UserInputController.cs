@@ -39,9 +39,7 @@ namespace Squares.UserInput
             this.processor = this.GridController.CellSelection.Subscribe(cellController =>
             {
                 cellController.Cell.Color = null;
-                cellController.GetComponent<MeshRenderer>().material.
-                    Color(ColorsManager.Empty, 1, curve: Curves.ExponentialOut).
-                    StartCoroutine();
+                cellController.SetColor(CellColors.Empty).StartCoroutine();
 
                 this.StartSelection();
             });
@@ -62,9 +60,7 @@ namespace Squares.UserInput
 
                 var color = this.colorQueue.Dequeue();
                 cellController.Cell.Color = color;
-                cellController.GetComponent<MeshRenderer>().material.
-                    Color(color, 1, curve: Curves.ExponentialOut).
-                    StartCoroutine();
+                cellController.SetColor(color).StartCoroutine();
 
                 this.selectedCells.Add(cellController);
             });
@@ -79,10 +75,7 @@ namespace Squares.UserInput
                 {
                     var cellController = this.GridController.GetCellController(cell);
                     cellController.Cell.Color = null;
-
-                    cellController.GetComponent<MeshRenderer>().material.
-                        Color(ColorsManager.Empty, 1, delay, Curves.ExponentialOut).
-                        StartCoroutine();
+                    cellController.SetColor(CellColors.Empty).StartCoroutine();
 
                     delay += 0.1f;
                 }

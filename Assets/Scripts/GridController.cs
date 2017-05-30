@@ -66,7 +66,7 @@ namespace Squares
             foreach (var cellController in this.cellControllers.Values)
             {
                 cellController.GetComponent<MeshRenderer>().material.
-                    Color(ColorsManager.Empty, 0.5f, 1, Curves.ExponentialOut).
+                    Color(CellColors.Empty, 0.5f, 1, Curves.ExponentialOut).
                     StartCoroutine();
             }
         }

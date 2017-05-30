@@ -17,7 +17,7 @@ namespace Squares.UI
 
         private Vector3 scale = new Vector3(50, 50, 1);
         private WaitForSeconds wait = new WaitForSeconds(0.5f);
-        private Queue<Transform> squaresTransforms = new Queue<Transform>();
+        private Queue<Transform> squareTransforms = new Queue<Transform>();
 
         public void StartSelectionMonitoring()
         {
@@ -26,10 +26,10 @@ namespace Squares.UI
                 if (cellController.Cell.Color.HasValue)
                     return;
 
-                if (!this.squaresTransforms.Any())
+                if (!this.squareTransforms.Any())
                     return;
 
-                this.squaresTransforms.Dequeue().Scale(Vector3.zero, 0.5f).StartCoroutine();
+                this.squareTransforms.Dequeue().Scale(Vector3.zero, 0.5f).StartCoroutine();
             });
         }
 
@@ -40,7 +40,7 @@ namespace Squares.UI
             foreach (Transform square in this.transform)
                 GameObject.Destroy(square.gameObject);
 
-            this.squaresTransforms.Clear();
+            this.squareTransforms.Clear();
 
             var delay = 0.1f;
             foreach (var color in colors)
@@ -51,7 +51,7 @@ namespace Squares.UI
                 square.transform.Scale(this.scale, 1, delay, Curves.ElasticOut).StartCoroutine();
                 square.GetComponent<MeshRenderer>().material.color = color;
 
-                this.squaresTransforms.Enqueue(square.transform);
+                this.squareTransforms.Enqueue(square.transform);
 
                 delay += 0.1f;
             }
