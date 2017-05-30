@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UniRx;
 using Tweens;
-using Coroutines;
+using CoroutinesEx;
 using Squares.Game;
 
 namespace Squares.UserInput
