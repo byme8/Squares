@@ -30,7 +30,7 @@ namespace Squares.Game
         {
             get
             {
-                return this.newColors;
+                return this.newColors.AsObservable();
             }
         }
 

@@ -56,8 +56,8 @@ namespace Squares.Game
 
             foreach (var cell in cells)
             {
-                var allCells = this.CheckColors(cell, new[] { cell }).ToArray();
-                var mergedCells = allCells.Distinct();
+                var allCells = this.CheckColors(cell, new[] { cell });
+                var mergedCells = allCells.Distinct().ToArray();
                 if (mergedCells.Count() > 2)
                 {
                     allMergedCells.AddRange(mergedCells);
