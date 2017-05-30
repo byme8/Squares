@@ -1,11 +1,11 @@
 ﻿using UniRx;
 using UnityEngine;
 
-namespace Assets.Scripts.Game
+namespace Squares.Game
 {
     public class Cell
     {
-        public Color Color { get; set; }
+        public Color? Color { get; set; }
 
         public int Column { get; set; }
 
@@ -15,7 +15,6 @@ namespace Assets.Scripts.Game
         {
             this.Row = row;
             this.Column = column;
-            this.Color = Color.black;
         }
 
         public override bool Equals(object obj)

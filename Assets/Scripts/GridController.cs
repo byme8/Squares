@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Squares.Game;
+using UniRx;
 using UnityEngine;
 
 namespace Squares
@@ -7,21 +10,25 @@ namespace Squares
     public class GridController : MonoBehaviour
     {
         public GameObject CellPrefab;
-
         public int Height;
         public int Width;
+        const float Space = 1.1f;
+        private Subject<Cell> cellSelection = new Subject<Cell>();
 
-        private void Start()
+        public IObservable<Cell> CellSelection
         {
-            this.CreateGrid();
+            get
+            {
+                return this.cellSelection.AsObservable();
+            }
         }
 
         private void CreateGrid()
         {
-            const float spacing = 1.1f;
-            var verticalShift = this.Height / spacing / 2.0f;
-            var horizontalShift = this.Width / spacing / 2.0f;
+            var verticalShift = this.Height / Space / 2.0f;
+            var horizontalShift = this.Width / Space / 2.0f;
             var gridTransform = this.gameObject.transform;
+            var game = GameController.Instance;
 
             for (int i = 0; i < this.Width; i++)
             {
@@ -30,9 +37,23 @@ namespace Squares
                     var cell = this.CellPrefab.Clone();
                     var cellTransform = cell.transform;
                     cellTransform.parent = gridTransform;
-                    cellTransform.localPosition = new Vector3(spacing * i - horizontalShift, spacing * j - verticalShift, 0);
+                    cellTransform.localPosition = new Vector3(Space * i - horizontalShift, Space * j - verticalShift, 0);
+                    var cellController = cell.GetComponent<CellController>();
+                    cellController.Cell = game.Cells[i + 1][j + 1];
+                    cellController.Selection = this.cellSelection;
                 }
             }
+        }
+
+        private void OnDestroy()
+        {
+            this.cellSelection.Dispose();
+        }
+
+        private void Start()
+        {
+            GameController.Instance.SetSize(this.Height, this.Width);
+            this.CreateGrid();
         }
     }
 }

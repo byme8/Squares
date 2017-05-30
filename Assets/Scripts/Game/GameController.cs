@@ -2,19 +2,20 @@
 using System.Linq;
 using UniRx;
 using UnityEngine;
+using Utils;
 
-namespace Assets.Scripts.Game
+namespace Squares.Game
 {
-    public class GameController
+    public class GameController : Singletone<GameController>
     {
-        private readonly Subject<IEnumerable<Cell>> selectedCells;
-
         private Vector2[] directions = new Vector2[] {
             Vector2.up,
             Vector2.down,
             Vector2.left,
             Vector2.right
         };
+
+        private Subject<IEnumerable<Cell>> mergedCells;
 
         public Cell[][] Cells
         {
@@ -26,11 +27,15 @@ namespace Assets.Scripts.Game
         {
             get
             {
-                return this.selectedCells.AsObservable();
+                return this.mergedCells.AsObservable();
             }
         }
 
-        public GameController(int height, int width)
+        public GameController()
+        {
+        }
+
+        public void SetSize(int height, int width)
         {
             this.Cells = Enumerable.Range(0, height + 2).
                 Select(row =>
@@ -40,7 +45,7 @@ namespace Assets.Scripts.Game
                         ToArray()).
                 ToArray();
 
-            this.selectedCells = new Subject<IEnumerable<Cell>>();
+            this.mergedCells = new Subject<IEnumerable<Cell>>();
         }
 
         public void Turn(IEnumerable<Cell> cells)
@@ -56,7 +61,7 @@ namespace Assets.Scripts.Game
                 {
                     foreach (var selectedCell in mergedCells)
                         this.Cells[selectedCell.Row][selectedCell.Column].Color = Color.black;
-                    this.selectedCells.OnNext(mergedCells);
+                    this.mergedCells.OnNext(mergedCells);
                 }
             }
         }
@@ -67,7 +72,7 @@ namespace Assets.Scripts.Game
             foreach (var direction in this.directions)
             {
                 var currentCell = this.Cells[cell.Row + (int)direction.y][cell.Column + (int)direction.x];
-                if (currentCell.Color == cell.Color && !cellsWithSameColor.Contains(cell))
+                if (currentCell.Color.HasValue && currentCell.Color == cell.Color && !cellsWithSameColor.Contains(cell))
                 {
                     cellsWithSameColor.Add(currentCell);
                 }
