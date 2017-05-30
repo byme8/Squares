@@ -35,13 +35,12 @@ namespace Squares.UI
 
         public IEnumerator SetColors(IEnumerable<Color> colors)
         {
-            if (colors == null)
-                yield break;
-
             yield return this.wait;
 
             foreach (Transform square in this.transform)
                 GameObject.Destroy(square.gameObject);
+
+            this.squaresTransforms.Clear();
 
             var delay = 0.1f;
             foreach (var color in colors)
@@ -61,7 +60,7 @@ namespace Squares.UI
         public IEnumerator Hide()
         {
             yield return this.transform.GetChilds().
-                Select(o => o.Scale(Vector3.zero, 0.3f)).AsParallel();
+                Select(o => o.Scale(Vector3.zero, 0.5f, curve : Curves.ExponentialOut)).AsParallel();
         }
     }
 }

@@ -51,6 +51,10 @@ namespace Squares.Game
         {
             this.Colors = this.NextColors;
             this.NextColors = Enumerable.Range(0, 3).Select(_ => this.acceptableColors.Random()).ToArray();
+
+            if (this.Colors == null)
+                return;
+
             this.newColors.OnNext(this.Colors);
         }
     }

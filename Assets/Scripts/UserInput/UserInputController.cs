@@ -20,9 +20,15 @@ namespace Squares.UserInput
 
         private List<CellController> selectedCells = new List<CellController>();
 
-        private void Start()
+        private void Awake()
         {
-            this.colorQueue = new Queue<Color>(ColorsManager.Instance.Colors);
+            this.colorQueue = new Queue<Color>();
+            ColorsManager.Instance.NewColors.Subscribe(colors =>
+            {
+                this.colorQueue.Clear();
+                foreach (var color in colors)
+                    this.colorQueue.Enqueue(color);
+            });
         }
 
         public void StartHammerProcesing()
@@ -39,7 +45,6 @@ namespace Squares.UserInput
 
                 this.StartSelection();
             });
-
         }
 
         public void StartSelection()
@@ -58,11 +63,10 @@ namespace Squares.UserInput
                 var color = this.colorQueue.Dequeue();
                 cellController.Cell.Color = color;
                 cellController.GetComponent<MeshRenderer>().material.
-                    Color(color, 1, curve: Curves.ExponentialOut ).
+                    Color(color, 1, curve: Curves.ExponentialOut).
                     StartCoroutine();
 
                 this.selectedCells.Add(cellController);
-              
             });
         }
 
@@ -86,11 +90,7 @@ namespace Squares.UserInput
                 this.selectedCells.Clear();
 
                 if (!this.colorQueue.Any())
-                {
                     ColorsManager.Instance.Next();
-                    foreach (var color in ColorsManager.Instance.Colors)
-                        this.colorQueue.Enqueue(color);
-                }
             }
         }
     }

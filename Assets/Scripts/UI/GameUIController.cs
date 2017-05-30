@@ -14,23 +14,33 @@ namespace Squares.UI
     {
         public ColorsView MainColors;
         public ColorsView HintColors;
-        private bool hintShowed;
 
         private void Awake()
         {
             ColorsManager.Instance.NewColors.Subscribe(colors =>
             {
-                this.HintColors.Hide().StartCoroutine();
-                this.MainColors.SetColors(colors).StartCoroutine();
+                this.NewColorsCoroutine(colors).StartCoroutine();
             });
 
             this.MainColors.StartSelectionMonitoring();
         }
 
+        private IEnumerator NewColorsCoroutine(IEnumerable<Color> colors)
+        {
+            yield return new[] { this.HintColors.Hide(),
+                                 this.MainColors.Hide() }.AsParallel();
+
+            yield return this.MainColors.SetColors(colors);
+        }
+
         public void ShowHint()
         {
-            this.hintShowed = true;
             this.HintColors.SetColors(ColorsManager.Instance.NextColors).StartCoroutine();
+        }
+
+        public void Skip()
+        {
+            ColorsManager.Instance.Next();
         }
     }
 }
