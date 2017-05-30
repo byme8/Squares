@@ -13,25 +13,14 @@ namespace Squares
         public Cell Cell;
         public Subject<CellController> Selection;
 
-        public bool Filled
-        {
-            get
-            {
-                return this.Cell.Color.HasValue;
-            }
-        }
-
         private void OnMouseDown()
         {
-            if (!this.Filled)
-            {
-                this.Selection.OnNext(this);
-            }
+            this.Selection.OnNext(this);
         }
 
         private void OnMouseEnter()
         {
-            if (Input.GetMouseButton(0) && !this.Filled)
+            if (Input.GetMouseButton(0))
             {
                 this.Selection.OnNext(this);
             }

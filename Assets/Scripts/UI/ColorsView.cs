@@ -21,8 +21,11 @@ namespace Squares.UI
 
         public void StartSelectionMonitoring()
         {
-            this.GridController.CellSelection.Subscribe(_ =>
+            this.GridController.CellSelection.Subscribe(cellController =>
             {
+                if (cellController.Cell.Color.HasValue)
+                    return;
+
                 if (!this.squaresTransforms.Any())
                     return;
 

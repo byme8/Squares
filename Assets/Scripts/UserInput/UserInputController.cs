@@ -25,13 +25,20 @@ namespace Squares.UserInput
             this.colorQueue = new Queue<Color>(ColorsManager.Instance.Colors);
         }
 
-        public void MakeHint()
+        public void StartHammerProcesing()
         {
+            if (this.processor != null)
+                this.processor.Dispose();
 
-        }
+            this.processor = this.GridController.CellSelection.Subscribe(cellController =>
+            {
+                cellController.Cell.Color = null;
+                cellController.GetComponent<MeshRenderer>().material.
+                    Color(ColorsManager.Empty, 1, curve: Curves.ExponentialOut).
+                    StartCoroutine();
 
-        public void StartHummerProcesing()
-        {
+                this.StartSelection();
+            });
 
         }
 
@@ -42,6 +49,9 @@ namespace Squares.UserInput
 
             this.processor = this.GridController.CellSelection.Subscribe(cellController =>
             {
+                if (cellController.Cell.Color.HasValue)
+                    return;
+
                 if (!this.colorQueue.Any())
                     return;
 
@@ -67,7 +77,7 @@ namespace Squares.UserInput
                     cellController.Cell.Color = null;
 
                     cellController.GetComponent<MeshRenderer>().material.
-                        Color(ColorsManager.Idle, 1, delay, Curves.ExponentialOut).
+                        Color(ColorsManager.Empty, 1, delay, Curves.ExponentialOut).
                         StartCoroutine();
 
                     delay += 0.1f;
