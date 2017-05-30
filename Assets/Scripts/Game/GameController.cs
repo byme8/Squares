@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -15,13 +16,23 @@ namespace Squares.Game
             Vector2.right
         };
 
+        private Subject<Unit> gameOver;
         private Subject<IEnumerable<Cell>> mergedCells;
-
         public Cell[][] Cells
         {
             get;
             private set;
         }
+
+        public IObservable<Unit> GameOver
+        {
+            get
+            {
+                return this.gameOver.AsObservable();
+            }
+        }
+
+        public int Height { get; private set; }
 
         public IObservable<IEnumerable<Cell>> MergedCells
         {
@@ -31,12 +42,17 @@ namespace Squares.Game
             }
         }
 
+        public int Width { get; private set; }
+
         public GameController()
         {
         }
 
         public void SetSize(int height, int width)
         {
+            this.Height = height;
+            this.Width = width;
+
             this.Cells = Enumerable.Range(0, height + 2).
                 Select(row =>
                     Enumerable.Range(0, width + 2).
@@ -46,6 +62,7 @@ namespace Squares.Game
                 ToArray();
 
             this.mergedCells = new Subject<IEnumerable<Cell>>();
+            this.gameOver = new Subject<Unit>();
         }
 
         public IEnumerable<Cell> Turn(IEnumerable<Cell> cells)
@@ -59,10 +76,15 @@ namespace Squares.Game
                 var allCells = this.CheckColors(cell, new[] { cell });
                 var mergedCells = allCells.Distinct().ToArray();
                 if (mergedCells.Count() > 2)
-                {
                     allMergedCells.AddRange(mergedCells);
-                }
             }
+
+            if (!allMergedCells.Any())
+            {
+                this.CheckGameOver();
+                return allMergedCells;
+            }
+
             var allUniqueMergedCells = allMergedCells.Distinct().ToArray();
             this.mergedCells.OnNext(allUniqueMergedCells);
             return allUniqueMergedCells;
@@ -92,6 +114,21 @@ namespace Squares.Game
             else
             {
                 return previouslyCells;
+            }
+        }
+
+        private void CheckGameOver()
+        {
+            // skip first and last row/column
+            if (this.Cells.Skip(1).Take(this.Height).All(rows =>
+                      rows.Skip(1).Take(this.Width).All(cell => cell.Color.HasValue)))
+            {
+
+                foreach (var row in this.Cells)
+                    foreach (var cell in row)
+                        cell.Color = null;
+
+                this.gameOver.OnNext(Unit.Default);
             }
         }
     }

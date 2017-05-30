@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Coroutines;
 using Squares.Game;
+using Tweens;
 using UniRx;
 using UnityEngine;
 
@@ -56,6 +58,16 @@ namespace Squares
 
                     this.cellControllers.Add(cellController.Cell, cellController);
                 }
+            }
+        }
+
+        public void Cleanup()
+        {
+            foreach (var cellController in this.cellControllers.Values)
+            {
+                cellController.GetComponent<MeshRenderer>().material.
+                    Color(ColorsManager.Empty, 0.5f, 1, Curves.ExponentialOut).
+                    StartCoroutine();
             }
         }
 

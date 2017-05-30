@@ -592,6 +592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UserInputController: {fileID: 854802966}
+  GridController: {fileID: 405229862}
 --- !u!4 &854802965
 Transform:
   m_ObjectHideFlags: 0

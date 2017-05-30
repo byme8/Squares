@@ -10,12 +10,13 @@ using Squares.UserInput;
 public class Main : MonoBehaviour
 {
     public UserInputController UserInputController;
+    public GridController GridController;
 
     private void Start()
     {
-        this.UserInputController.StartSelection();
-        ColorsManager.Instance.Next();
-        ColorsManager.Instance.Next();
+        this.Restart();
+
+        GameController.Instance.GameOver.Subscribe(_ => this.Restart());
 
         //var game = GameController.Instance;
         //game.MergedCells.Subscribe(cells =>
@@ -33,5 +34,13 @@ public class Main : MonoBehaviour
         //{
         //    new Cell(2, 2) { Color = Color.blue },
         //});
+    }
+
+    private void Restart()
+    {
+        this.UserInputController.StartSelection();
+        this.GridController.Cleanup();
+        ColorsManager.Instance.Next();
+        ColorsManager.Instance.Next();
     }
 }

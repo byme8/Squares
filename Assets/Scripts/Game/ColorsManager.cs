@@ -18,6 +18,10 @@ namespace Squares.Game
             Color.red,
             Color.yellow,
             Color.green
+            //,
+            //Color.gray,
+            //Color.black,
+            //Color.cyan,
         };
 
         private Subject<IEnumerable<Color>> newColors = new Subject<IEnumerable<Color>>();
