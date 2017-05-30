@@ -11,7 +11,7 @@ namespace Utils
         public static TValue Random<TValue>(this IEnumerable<TValue> list)
         {
             var count = list.Count();
-            return list.Skip(random.Next(0, count - 2)).First();
+            return list.Skip(random.Next(0, count)).First();
         }
     }
 }

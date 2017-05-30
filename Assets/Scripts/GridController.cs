@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Squares.Game;
 using UniRx;
 using UnityEngine;
@@ -13,9 +14,10 @@ namespace Squares
         public int Height;
         public int Width;
         const float Space = 1.1f;
-        private Subject<Cell> cellSelection = new Subject<Cell>();
+        private Subject<CellController> cellSelection = new Subject<CellController>();
+        private Dictionary<Cell, CellController> cellControllers;
 
-        public IObservable<Cell> CellSelection
+        public IObservable<CellController> CellSelection
         {
             get
             {
@@ -30,19 +32,26 @@ namespace Squares
             var gridTransform = this.gameObject.transform;
             var game = GameController.Instance;
 
-            for (int i = 0; i < this.Width; i++)
+            for (int i = 0; i < this.Height; i++)
             {
-                for (int j = 0; j < this.Height; j++)
+                for (int j = 0; j < this.Width; j++)
                 {
                     var cell = this.CellPrefab.Clone();
                     var cellTransform = cell.transform;
                     cellTransform.parent = gridTransform;
-                    cellTransform.localPosition = new Vector3(Space * i - horizontalShift, Space * j - verticalShift, 0);
+                    cellTransform.localPosition = new Vector3(Space * j - verticalShift, Space * i - horizontalShift, 0);
                     var cellController = cell.GetComponent<CellController>();
                     cellController.Cell = game.Cells[i + 1][j + 1];
                     cellController.Selection = this.cellSelection;
+
+                    this.cellControllers.Add(cellController.Cell, cellController);
                 }
             }
+        }
+
+        public CellController GetCellController(Cell cell)
+        {
+            return this.cellControllers.First(o => o.Key == cell).Value;
         }
 
         private void OnDestroy()
@@ -53,6 +62,7 @@ namespace Squares
         private void Start()
         {
             GameController.Instance.SetSize(this.Height, this.Width);
+            this.cellControllers = new Dictionary<Cell, CellController>();
             this.CreateGrid();
         }
     }

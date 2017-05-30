@@ -48,8 +48,9 @@ namespace Squares.Game
             this.mergedCells = new Subject<IEnumerable<Cell>>();
         }
 
-        public void Turn(IEnumerable<Cell> cells)
+        public IEnumerable<Cell> Turn(IEnumerable<Cell> cells)
         {
+            var allMergedCells = new List<Cell>();
             foreach (var cell in cells)
                 this.Cells[cell.Row][cell.Column].Color = cell.Color;
 
@@ -59,14 +60,15 @@ namespace Squares.Game
                 var mergedCells = allCells.Distinct();
                 if (mergedCells.Count() > 2)
                 {
-                    foreach (var selectedCell in mergedCells)
-                        this.Cells[selectedCell.Row][selectedCell.Column].Color = Color.black;
-                    this.mergedCells.OnNext(mergedCells);
+                    allMergedCells.AddRange(mergedCells);
                 }
             }
+            var allUniqueMergedCells = allMergedCells.Distinct().ToArray();
+            this.mergedCells.OnNext(allUniqueMergedCells);
+            return allUniqueMergedCells;
         }
 
-        private IEnumerable<Cell> CheckColors(Cell cell, IEnumerable<Cell> previouslyCells)
+        private IEnumerable<Cell> CheckColors(Cell cell, Cell[] previouslyCells)
         {
             var cellsWithSameColor = new List<Cell>();
             foreach (var direction in this.directions)
@@ -78,20 +80,18 @@ namespace Squares.Game
                 }
             }
 
-            var newCells = cellsWithSameColor.Except(previouslyCells);
+            var newCells = cellsWithSameColor.Except(previouslyCells).ToArray();
             if (newCells.Any())
             {
+                var nextCells = new List<Cell>();
                 foreach (var newCell in newCells)
-                {
-                    var cellsToMerge = this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells));
-                    foreach (var cellToMerge in cellsToMerge)
-                        yield return cellToMerge;
-                }
+                    nextCells.AddRange(this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells).ToArray()));
+
+                return nextCells;
             }
             else
             {
-                foreach (var cellToMerge in previouslyCells)
-                    yield return cellToMerge;
+                return previouslyCells;
             }
         }
     }

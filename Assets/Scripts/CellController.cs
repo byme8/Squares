@@ -11,7 +11,7 @@ namespace Squares
     public class CellController : MonoBehaviour
     {
         public Cell Cell;
-        public Subject<Cell> Selection;
+        public Subject<CellController> Selection;
 
         public bool Filled
         {
@@ -25,7 +25,7 @@ namespace Squares
         {
             if (Input.GetMouseButton(0) && !this.Filled)
             {
-                this.Selection.OnNext(this.Cell);
+                this.Selection.OnNext(this);
             }
         }
 
@@ -33,7 +33,7 @@ namespace Squares
         {
             if (!this.Filled)
             {
-                this.Selection.OnNext(this.Cell);
+                this.Selection.OnNext(this);
             }
         }
     }
