@@ -29,6 +29,8 @@ namespace Tweens
                 timeSpent += Time.deltaTime;
                 yield return null;
             }
+
+            setValue(valueCalculator(1));
         }
     }
 }
