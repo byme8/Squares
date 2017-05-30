@@ -10,6 +10,8 @@ namespace Squares.Game
 {
     public class ColorsManager : Singletone<ColorsManager>
     {
+        public static Color Idle = new Color32(218, 218, 218, 255);
+
         private Color[] acceptableColors = new[] 
         {
             Color.blue,

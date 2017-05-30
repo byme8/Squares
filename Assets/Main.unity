@@ -273,6 +273,52 @@ MonoBehaviour:
   CellPrefab: {fileID: 1476799033925166, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
   Height: 5
   Width: 5
+--- !u!1001 &754839671
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4676731255503668, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1476799033925166, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 5e36c35304c03f543ad70817f6c56ec6, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &854802963
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +532,7 @@ RectTransform:
   m_GameObject: {fileID: 1397582023}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9999999, y: 0.9999999, z: 0.9999999}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children: []
   m_Father: {fileID: 876297127}
   m_RootOrder: 1
@@ -542,10 +588,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 10
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 10
+  m_Spacing: 20
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -610,7 +656,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 10
+  m_Spacing: 20
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1

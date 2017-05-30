@@ -67,7 +67,7 @@ namespace Squares.UserInput
                     cellController.Cell.Color = null;
 
                     cellController.GetComponent<MeshRenderer>().material.
-                        Color(Color.gray, 1, delay, Curves.ExponentialOut).
+                        Color(ColorsManager.Idle, 1, delay, Curves.ExponentialOut).
                         StartCoroutine();
 
                     delay += 0.1f;
