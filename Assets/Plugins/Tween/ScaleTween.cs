@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coroutines;
-using Coroutines.Abstractions;
+using CoroutinesEx;
+using CoroutinesEx.Abstractions;
 using Tweens.Data;
 using UnityEngine;
 

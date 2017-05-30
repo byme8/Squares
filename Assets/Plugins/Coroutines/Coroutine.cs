@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Coroutines.Abstractions;
+using CoroutinesEx.Abstractions;
 using UnityEngine;
 
-namespace Coroutines
+namespace CoroutinesEx
 {
     public class CoroutineTask : CustomYieldInstruction, ICoroutine
     {

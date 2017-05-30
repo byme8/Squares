@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
-using Coroutines.Abstractions;
+using CoroutinesEx.Abstractions;
 using UnityEngine;
 
-namespace Coroutines
+namespace CoroutinesEx
 {
-    public static class CoroutinesFactory
+    public static class Coroutines
     {
         static CoroutineHolder CoroutineHolder;
 
-        static CoroutinesFactory()
+        static Coroutines()
         {
             var gameObject = new GameObject("~Coroutines");
             CoroutineHolder = gameObject.AddComponent<CoroutineHolder>();
@@ -22,9 +22,22 @@ namespace Coroutines
             return coroutine;
         }
 
-        public static Coroutine StartCoroutine(this IEnumerator coroutine)
+        public static Coroutine StartCoroutine(this IEnumerator coroutine, string group = null)
         {
-            return CoroutineHolder.AddCoroutine(coroutine);
+            if (string.IsNullOrEmpty(group))
+                return CoroutineHolder.AddCoroutine(coroutine);
+
+            return CoroutineHolder.AddCoroutine(coroutine, group);
+        }
+
+        public static void StopGroup(string group)
+        {
+            CoroutineHolder.StopGroup(group);
+        }
+
+        public static bool IsGroupActive(string group)
+        {
+            return CoroutineHolder.IsGroupActive(group);
         }
 
         public static void Stop(this Coroutine coroutine)

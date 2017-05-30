@@ -1,6 +1,6 @@
 using System.Collections;
-using Coroutines;
-using Coroutines.Abstractions;
+using CoroutinesEx;
+using CoroutinesEx.Abstractions;
 using Tweens.Data;
 using UnityEngine;
 

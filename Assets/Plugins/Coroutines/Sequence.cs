@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coroutines.Abstractions;
+using CoroutinesEx.Abstractions;
 using UnityEngine;
 
-namespace Coroutines
+namespace CoroutinesEx
 {
     public static class Sequence
     {

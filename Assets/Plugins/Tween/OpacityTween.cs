@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Coroutines;
+using CoroutinesEx;
 using Tweens;
 using Tweens.Data;
 using UnityEngine;
