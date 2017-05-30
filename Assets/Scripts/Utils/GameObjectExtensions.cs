@@ -36,5 +36,11 @@ namespace UnityEngine
         {
             return GameObject.Instantiate(gameObject).GetComponent<TComponent>();
         }
+
+        public static IEnumerable<Transform> GetChilds(this Transform gameObject)
+        {
+            foreach (Transform transform in gameObject.transform)
+                yield return transform;
+        }
     }
 }

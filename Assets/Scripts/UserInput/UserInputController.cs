@@ -14,11 +14,16 @@ namespace Squares.UserInput
     {
         public GridController GridController;
 
-        private Queue<Color> colorQueue = new Queue<Color>(ColorsManager.Instance.Colors);
+        private Queue<Color> colorQueue;
 
         private IDisposable processor;
 
         private List<CellController> selectedCells = new List<CellController>();
+
+        private void Start()
+        {
+            this.colorQueue = new Queue<Color>(ColorsManager.Instance.Colors);
+        }
 
         public void MakeHint()
         {
@@ -41,7 +46,6 @@ namespace Squares.UserInput
                     return;
 
                 var color = this.colorQueue.Dequeue();
-                Debug.Log(string.Format("Cell:{0}:{1} selected", cellController.Cell.Row, cellController.Cell.Column));
                 cellController.Cell.Color = color;
                 cellController.GetComponent<MeshRenderer>().material.
                     Color(color, 1, curve: Curves.ExponentialOut ).

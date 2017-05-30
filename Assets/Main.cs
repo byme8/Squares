@@ -14,7 +14,8 @@ public class Main : MonoBehaviour
     private void Start()
     {
         this.UserInputController.StartSelection();
-
+        ColorsManager.Instance.Next();
+        ColorsManager.Instance.Next();
 
         //var game = GameController.Instance;
         //game.MergedCells.Subscribe(cells =>

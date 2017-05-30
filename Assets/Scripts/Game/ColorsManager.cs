@@ -43,8 +43,6 @@ namespace Squares.Game
 
         public ColorsManager()
         {
-            this.Next();
-            this.Next();
         }
 
         public void Next()
