@@ -8,53 +8,29 @@ using Tweens;
 using UniRx;
 using UnityEngine;
 
-public class GameUIController : MonoBehaviour
+namespace Squares.UI
 {
-    public GridController GridController;
-    public Transform PanelTransform;
-    public GameObject SquareTemplate;
-    private Vector3 Scale = new Vector3(50, 50, 1);
-    private Queue<Transform> squaresTransforms = new Queue<Transform>();
-    private WaitForSeconds wait = new WaitForSeconds(0.5f);
-
-    private void Awake()
+    public class GameUIController : MonoBehaviour
     {
-        ColorsManager.Instance.NewColors.Subscribe(colors =>
+        public ColorsView MainColors;
+        public ColorsView HintColors;
+        private bool hintShowed;
+
+        private void Awake()
         {
-            this.NewColorsCoroutine(colors).StartCoroutine();
-        });
+            ColorsManager.Instance.NewColors.Subscribe(colors =>
+            {
+                this.HintColors.Hide().StartCoroutine();
+                this.MainColors.SetColors(colors).StartCoroutine();
+            });
 
-        this.GridController.CellSelection.Subscribe(_ =>
+            this.MainColors.StartSelectionMonitoring();
+        }
+
+        public void ShowHint()
         {
-            if (!this.squaresTransforms.Any())
-                return;
-
-            this.squaresTransforms.Dequeue().Scale(Vector3.zero, 0.5f).StartCoroutine();
-        });
-    }
-
-    private IEnumerator NewColorsCoroutine(IEnumerable<Color> colors)
-    {
-        if (colors == null)
-            yield break;
-
-        yield return this.wait;
-
-        foreach (Transform square in this.PanelTransform)
-            GameObject.Destroy(square.gameObject);
-
-        var delay = 0.1f;
-        foreach (var color in colors)
-        {
-            var square = this.SquareTemplate.Clone();
-            square.transform.SetParent(this.PanelTransform);
-            square.transform.localScale = Vector3.zero;
-            square.transform.Scale(this.Scale, 1, delay, Curves.ElasticOut).StartCoroutine();
-            square.GetComponent<MeshRenderer>().material.color = color;
-
-            this.squaresTransforms.Enqueue(square.transform);
-
-            delay += 0.1f;
+            this.hintShowed = true;
+            this.HintColors.SetColors(ColorsManager.Instance.NextColors).StartCoroutine();
         }
     }
 }

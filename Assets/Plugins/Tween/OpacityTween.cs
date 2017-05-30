@@ -12,13 +12,17 @@ namespace Tweens
 {
     public static class OpacityTween
     {
-        public static IEnumerator Opacity(this CanvasRenderer render, float to, float time, float delay = 0, Curve curve = null)
+        public static IEnumerator Opacity(this Material material, float to, float time, float delay = 0, Curve curve = null)
         {
+            var color = material.color;
+            var start = color.a;
+            var delta = to - start;
+
             return Sequence.Create(
                Delay.Create(delay),
-               ProcessOpacity(
-                   render,
-                   to,
+               TweenHelper.Process(
+                   opacity => material.color = new Color(color.r, color.g, color.b, opacity),
+                   shift => start + delta * shift,
                    time,
                    curve));
         }
