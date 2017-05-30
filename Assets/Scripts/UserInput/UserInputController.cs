@@ -13,9 +13,22 @@ namespace Squares.UserInput
     public class UserInputController : MonoBehaviour
     {
         public GridController GridController;
-        private IDisposable processor;
-        private List<CellController> selectedCells = new List<CellController>();
+
         private Queue<Color> colorQueue = new Queue<Color>(ColorsManager.Instance.Colors);
+
+        private IDisposable processor;
+
+        private List<CellController> selectedCells = new List<CellController>();
+
+        public void MakeHint()
+        {
+
+        }
+
+        public void StartHummerProcesing()
+        {
+
+        }
 
         public void StartSelection()
         {
@@ -65,16 +78,6 @@ namespace Squares.UserInput
                         this.colorQueue.Enqueue(color);
                 }
             }
-        }
-
-        public void StartHummerProcesing()
-        {
-
-        }
-
-        public void MakeHint()
-        {
-
         }
     }
 }

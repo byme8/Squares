@@ -21,17 +21,17 @@ namespace Squares
             }
         }
 
-        private void OnMouseEnter()
+        private void OnMouseDown()
         {
-            if (Input.GetMouseButton(0) && !this.Filled)
+            if (!this.Filled)
             {
                 this.Selection.OnNext(this);
             }
         }
 
-        private void OnMouseDown()
+        private void OnMouseEnter()
         {
-            if (!this.Filled)
+            if (Input.GetMouseButton(0) && !this.Filled)
             {
                 this.Selection.OnNext(this);
             }

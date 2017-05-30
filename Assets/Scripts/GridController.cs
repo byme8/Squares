@@ -11,11 +11,16 @@ namespace Squares
     public class GridController : MonoBehaviour
     {
         public GameObject CellPrefab;
+
         public int Height;
+
         public int Width;
+
         const float Space = 1.1f;
-        private Subject<CellController> cellSelection = new Subject<CellController>();
+
         private Dictionary<Cell, CellController> cellControllers;
+
+        private Subject<CellController> cellSelection = new Subject<CellController>();
 
         public IObservable<CellController> CellSelection
         {
@@ -23,6 +28,11 @@ namespace Squares
             {
                 return this.cellSelection.AsObservable();
             }
+        }
+
+        public CellController GetCellController(Cell cell)
+        {
+            return this.cellControllers.First(o => o.Key == cell).Value;
         }
 
         private void CreateGrid()
@@ -47,11 +57,6 @@ namespace Squares
                     this.cellControllers.Add(cellController.Cell, cellController);
                 }
             }
-        }
-
-        public CellController GetCellController(Cell cell)
-        {
-            return this.cellControllers.First(o => o.Key == cell).Value;
         }
 
         private void OnDestroy()
