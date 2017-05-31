@@ -26,7 +26,7 @@ namespace Squares.Game
             this.Score = new ReactiveProperty<int>();
             this.BestScore = new ReactiveProperty<int>();
 
-            GameController.Instance.GameOver.Subscribe(_ =>
+            this.Score.Subscribe(_ =>
             {
                 if (this.Score.Value > this.BestScore.Value)
                     this.BestScore.Value = this.Score.Value;
