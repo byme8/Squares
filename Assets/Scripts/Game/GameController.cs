@@ -9,7 +9,7 @@ namespace Squares.Game
 {
     public class GameController : Singletone<GameController>
     {
-        private Vector2[] directions = new Vector2[] {
+        public readonly Vector2[] SupportedDirections = new Vector2[] {
             Vector2.up,
             Vector2.down,
             Vector2.left,
@@ -93,7 +93,7 @@ namespace Squares.Game
         private IEnumerable<Cell> CheckColors(Cell cell, Cell[] previouslyCells)
         {
             var cellsWithSameColor = new List<Cell>();
-            foreach (var direction in this.directions)
+            foreach (var direction in this.SupportedDirections)
             {
                 var currentCell = this.Cells[cell.Row + (int)direction.y][cell.Column + (int)direction.x];
                 if (currentCell.Color.HasValue && currentCell.Color == cell.Color && !cellsWithSameColor.Contains(cell))

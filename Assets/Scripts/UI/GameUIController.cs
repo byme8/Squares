@@ -27,15 +27,14 @@ namespace Squares.UI
 
         private IEnumerator NewColorsCoroutine(IEnumerable<Color> colors)
         {
-            yield return new[] { this.HintColors.Hide(),
-                                 this.MainColors.Hide() }.AsParallel();
+            yield return this.HintColors.Hide();
 
-            yield return this.MainColors.SetColors(colors);
+            this.MainColors.SetColors(colors);
         }
 
         public void ShowHint()
         {
-            this.HintColors.SetColors(ColorsManager.Instance.NextColors).StartCoroutine();
+            this.HintColors.SetColors(ColorsManager.Instance.NextColors);
         }
 
         public void Skip()

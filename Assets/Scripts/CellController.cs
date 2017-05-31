@@ -24,7 +24,7 @@ namespace Squares
 
         public IEnumerator SetColor(Color color)
         {
-            yield return this.material.Color(color, 1, curve: Curves.ExponentialOut);
+            yield return this.material.Color(color, 0.2f, curve: Curves.SinusoidalIn);
         }
 
         private void OnMouseDown()

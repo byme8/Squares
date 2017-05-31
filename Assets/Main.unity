@@ -892,7 +892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SquareTemplate: {fileID: 1476799033925166, guid: 3b4b50b052ce7bc40a4f5875ce762147,
     type: 2}
-  GridController: {fileID: 405229862}
+  UserInputController: {fileID: 854802966}
 --- !u!114 &1397582027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1073,7 +1073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SquareTemplate: {fileID: 1476799033925166, guid: 3b4b50b052ce7bc40a4f5875ce762147,
     type: 2}
-  GridController: {fileID: 405229862}
+  UserInputController: {fileID: 854802966}
 --- !u!114 &1426040413
 MonoBehaviour:
   m_ObjectHideFlags: 0

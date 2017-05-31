@@ -14,7 +14,9 @@ public class Main : MonoBehaviour
 
     private void Start()
     {
-        this.Restart();
+        this.UserInputController.StartSelection();
+        ColorsManager.Instance.Next();
+        ColorsManager.Instance.Next();
 
         GameController.Instance.GameOver.Subscribe(_ => this.Restart());
 

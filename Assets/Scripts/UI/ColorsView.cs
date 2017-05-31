@@ -7,60 +7,76 @@ using CoroutinesEx;
 using Tweens;
 using UnityEngine;
 using UniRx;
+using Squares.UserInput;
 
 namespace Squares.UI
 {
     public class ColorsView : MonoBehaviour
     {
         public GameObject SquareTemplate;
-        public GridController GridController;
+        public UserInputController UserInputController;
 
         private Vector3 scale = new Vector3(50, 50, 1);
-        private WaitForSeconds wait = new WaitForSeconds(0.5f);
-        private Queue<Transform> squareTransforms = new Queue<Transform>();
+        private List<Transform> Squares = new List<Transform>();
+        private int SquaresIndex;
 
         public void StartSelectionMonitoring()
         {
-            this.GridController.CellSelection.Subscribe(cellController =>
+            this.UserInputController.SelectedCells.ObserveAdd().Subscribe(addSelection =>
             {
-                if (cellController.Cell.Color.HasValue)
+                if (this.SquaresIndex >= this.Squares.Count)
                     return;
 
-                if (!this.squareTransforms.Any())
+                this.Squares[this.SquaresIndex++].Scale(Vector3.zero, 0.2f, curve: Curves.SinusoidalIn).StartCoroutine();
+            });
+
+            this.UserInputController.SelectedCells.ObserveReset().Subscribe(resetSelection =>
+            {
+                if (this.SquaresIndex >= this.Squares.Count)
                     return;
 
-                this.squareTransforms.Dequeue().Scale(Vector3.zero, 0.5f).StartCoroutine();
+                this.ShowSquares();
             });
         }
 
-        public IEnumerator SetColors(IEnumerable<Color> colors)
+        public void SetColors(IEnumerable<Color> colors)
         {
-            yield return this.wait;
+            foreach (var square in this.Squares)
+            {
+                square.gameObject.Disable();
+                GameObject.Destroy(square.gameObject, 1);
+            }
 
-            foreach (Transform square in this.transform)
-                GameObject.Destroy(square.gameObject);
+            this.Squares.Clear();
 
-            this.squareTransforms.Clear();
-
-            var delay = 0.1f;
             foreach (var color in colors)
             {
                 var square = this.SquareTemplate.Clone();
                 square.transform.SetParent(this.transform);
                 square.transform.localScale = Vector3.zero;
-                square.transform.Scale(this.scale, 1, delay, Curves.ElasticOut).StartCoroutine();
                 square.GetComponent<MeshRenderer>().material.color = color;
+                this.Squares.Add(square.transform);
+            }
 
-                this.squareTransforms.Enqueue(square.transform);
+            this.ShowSquares();
+        }
 
+        private void ShowSquares()
+        {
+            var delay = 0.1f;
+            foreach (var square in this.Squares)
+            {
+                square.transform.Scale(this.scale, 0.2f, delay, Curves.SinusoidalIn).StartCoroutine();
                 delay += 0.1f;
             }
+
+            this.SquaresIndex = 0;
         }
 
         public IEnumerator Hide()
         {
-            yield return this.transform.GetChilds().
-                Select(o => o.Scale(Vector3.zero, 0.5f, curve : Curves.ExponentialOut)).AsParallel();
+            yield return this.Squares.
+                Select(o => o.Scale(Vector3.zero, 0.2f, curve: Curves.SinusoidalIn)).AsParallel();
         }
     }
 }

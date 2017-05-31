@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using UnityEngine;
-using UniRx;
-using Tweens;
 using CoroutinesEx;
 using Squares.Game;
+using UniRx;
+using UnityEngine;
 
 namespace Squares.UserInput
 {
@@ -14,23 +12,12 @@ namespace Squares.UserInput
     {
         public GridController GridController;
 
-        private Queue<Color> colorQueue;
+        public ReactiveCollection<CellController> SelectedCells
+            = new ReactiveCollection<CellController>();
 
+        private int currentColorIndex;
+        private Color[] currentColors;
         private IDisposable processor;
-
-        private List<CellController> selectedCells = new List<CellController>();
-
-        private void Awake()
-        {
-            this.colorQueue = new Queue<Color>();
-            ColorsManager.Instance.NewColors.Subscribe(colors =>
-            {
-                this.colorQueue.Clear();
-                foreach (var color in colors)
-                    this.colorQueue.Enqueue(color);
-            });
-        }
-
         public void StartHammerProcesing()
         {
             if (this.processor != null)
@@ -55,35 +42,60 @@ namespace Squares.UserInput
                 if (cellController.Cell.Color.HasValue)
                     return;
 
-                if (!this.colorQueue.Any())
+                if (this.currentColorIndex >= this.currentColors.Length)
                     return;
 
-                var color = this.colorQueue.Dequeue();
-                cellController.Cell.Color = color;
-                cellController.SetColor(color).StartCoroutine();
+                var lastSelection = this.SelectedCells.LastOrDefault();
+                if (lastSelection == null || GameController.Instance.SupportedDirections.Any(direction =>
+                    cellController.Cell.Row - direction.y == lastSelection.Cell.Row &&
+                    cellController.Cell.Column - direction.x == lastSelection.Cell.Column))
+                {
+                    var color = this.currentColors[this.currentColorIndex++];
+                    cellController.Cell.Color = color;
+                    cellController.SetColor(color).StartCoroutine();
 
-                this.selectedCells.Add(cellController);
+                    this.SelectedCells.Add(cellController);
+                }
+            });
+        }
+
+        private void Awake()
+        {
+            ColorsManager.Instance.NewColors.Subscribe(colors =>
+            {
+                this.currentColors = colors.ToArray();
             });
         }
 
         private void Update()
         {
-            if (Input.GetMouseButtonUp(0) && this.selectedCells.Any())
+            if (Input.GetMouseButtonUp(0) && this.SelectedCells.Any())
             {
-                var delay = 0.1f;
-                foreach (var cell in GameController.Instance.Turn(this.selectedCells.Select(o => o.Cell)))
+                if (this.currentColorIndex != this.currentColors.Length)
                 {
-                    var cellController = this.GridController.GetCellController(cell);
-                    cellController.Cell.Color = null;
-                    cellController.SetColor(CellColors.Empty).StartCoroutine();
+                    foreach (var cellController in this.SelectedCells)
+                    {
+                        cellController.Cell.Color = null;
+                        cellController.SetColor(CellColors.Empty).StartCoroutine();
+                    }
+                }
+                else
+                {
+                    var delay = 0.1f;
 
-                    delay += 0.1f;
+                    foreach (var cell in GameController.Instance.Turn(this.SelectedCells.Select(o => o.Cell)))
+                    {
+                        var cellController = this.GridController.GetCellController(cell);
+                        cellController.Cell.Color = null;
+                        cellController.SetColor(CellColors.Empty).StartCoroutine();
+
+                        delay += 0.1f;
+                    }
+                    ColorsManager.Instance.Next();
                 }
 
-                this.selectedCells.Clear();
-
-                if (!this.colorQueue.Any())
-                    ColorsManager.Instance.Next();
+                this.SelectedCells.Clear();
+                this.currentColorIndex = 0;
             }
         }
     }
