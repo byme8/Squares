@@ -53,13 +53,13 @@ public class Main : MonoBehaviour
         this.RestartView.Disable();
     }
 
-#if UNITY_ANDROID
     private void OnApplicationPause(bool pause)
     {
         if (pause)
             GameSaver.Instance.Save();
     }
-#else
+
+#if UNITY_EDITOR
     private void OnApplicationQuit()
     {
         GameSaver.Instance.Save();
