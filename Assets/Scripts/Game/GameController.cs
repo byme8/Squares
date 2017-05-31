@@ -18,6 +18,7 @@ namespace Squares.Game
 
         private Subject<Unit> gameOver;
         private Subject<IEnumerable<Cell>> mergedCells;
+
         public Cell[][] Cells
         {
             get;
@@ -32,7 +33,11 @@ namespace Squares.Game
             }
         }
 
-        public int Height { get; private set; }
+        public int Height
+        {
+            get;
+            private set;
+        }
 
         public IObservable<IEnumerable<Cell>> MergedCells
         {
@@ -42,7 +47,11 @@ namespace Squares.Game
             }
         }
 
-        public int Width { get; private set; }
+        public int Width
+        {
+            get;
+            private set;
+        }
 
         public GameController()
         {
@@ -79,35 +88,44 @@ namespace Squares.Game
                     allMergedCells.AddRange(mergedCells);
             }
 
-            if (!allMergedCells.Any())
-            {
-                this.CheckGameOver();
-                return allMergedCells;
-            }
 
             var allUniqueMergedCells = allMergedCells.Distinct().ToArray();
+            foreach (var cell in allUniqueMergedCells)
+                cell.Color = CellColors.Empty;
+
+            this.CheckGameOver();
+
             this.mergedCells.OnNext(allUniqueMergedCells);
             return allUniqueMergedCells;
         }
 
-        private IEnumerable<Cell> CheckColors(Cell cell, Cell[] previouslyCells)
+        private IEnumerable<Cell> CheckColors(Cell cell, IEnumerable<Cell> previouslyCells, int limit = 10, int limitValue = 0)
         {
-            var cellsWithSameColor = new List<Cell>();
+            if (limitValue == limit)
+                return previouslyCells;
+
+            var newCells = new List<Cell>();
             foreach (var direction in this.SupportedDirections)
             {
                 var currentCell = this.Cells[cell.Row + (int)direction.y][cell.Column + (int)direction.x];
-                if (currentCell.Color.HasValue && currentCell.Color == cell.Color && !cellsWithSameColor.Contains(cell))
+                if (currentCell.Color.HasValue && currentCell.Color == cell.Color && !previouslyCells.Contains(currentCell))
                 {
-                    cellsWithSameColor.Add(currentCell);
+                    newCells.Add(currentCell);
                 }
             }
 
-            var newCells = cellsWithSameColor.Except(previouslyCells).ToArray();
             if (newCells.Any())
             {
                 var nextCells = new List<Cell>();
                 foreach (var newCell in newCells)
-                    nextCells.AddRange(this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells).ToArray()));
+                {
+                    var cells = this.CheckColors(newCell, new[] { newCell }.Union(previouslyCells), limit, limitValue++);
+
+                    if (cells.Count() > limit)
+                        return cells;
+
+                    nextCells.AddRange(cells);
+                }
 
                 return nextCells;
             }
@@ -119,17 +137,16 @@ namespace Squares.Game
 
         private void CheckGameOver()
         {
-            // skip first and last row/column
-            if (this.Cells.Skip(1).Take(this.Height).All(rows =>
-                      rows.Skip(1).Take(this.Width).All(cell => cell.Color.HasValue)))
+            var emptyCells = this.Cells.SelectMany(row => row.Where(o => o.Color == CellColors.Empty)).ToArray();
+            var limit = ColorsPropvider.Instance.NextColors.Length;
+            foreach (var cell in emptyCells)
             {
-
-                foreach (var row in this.Cells)
-                    foreach (var cell in row)
-                        cell.Color = null;
-
-                this.gameOver.OnNext(Unit.Default);
+                var mergedCells = this.CheckColors(cell, new[] { cell }, limit).Distinct().ToArray();
+                if (mergedCells.Count() >= limit)
+                    return;
             }
+
+            this.gameOver.OnNext(Unit.Default);
         }
     }
 }

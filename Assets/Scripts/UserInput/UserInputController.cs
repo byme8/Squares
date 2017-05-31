@@ -25,9 +25,7 @@ namespace Squares.UserInput
 
             this.processor = this.GridController.CellSelection.Subscribe(cellController =>
             {
-                cellController.Cell.Color = null;
                 cellController.SetColor(CellColors.Empty).StartCoroutine();
-
                 this.StartSelection();
             });
         }
@@ -39,7 +37,7 @@ namespace Squares.UserInput
 
             this.processor = this.GridController.CellSelection.Subscribe(cellController =>
             {
-                if (cellController.Cell.Color.HasValue)
+                if (cellController.Cell.Color != CellColors.Empty)
                     return;
 
                 if (this.currentColorIndex >= this.currentColors.Length)
@@ -51,7 +49,6 @@ namespace Squares.UserInput
                     cellController.Cell.Column - direction.x == lastSelection.Cell.Column))
                 {
                     var color = this.currentColors[this.currentColorIndex++];
-                    cellController.Cell.Color = color;
                     cellController.SetColor(color).StartCoroutine();
 
                     this.SelectedCells.Add(cellController);
@@ -61,7 +58,7 @@ namespace Squares.UserInput
 
         private void Awake()
         {
-            ColorsPrpvider.Instance.NewColors.Subscribe(colors =>
+            ColorsPropvider.Instance.NewColors.Subscribe(colors =>
             {
                 this.currentColors = colors.ToArray();
             });
@@ -75,7 +72,6 @@ namespace Squares.UserInput
                 {
                     foreach (var cellController in this.SelectedCells)
                     {
-                        cellController.Cell.Color = null;
                         cellController.SetColor(CellColors.Empty).StartCoroutine();
                     }
                 }
@@ -86,12 +82,11 @@ namespace Squares.UserInput
                     foreach (var cell in GameController.Instance.Turn(this.SelectedCells.Select(o => o.Cell)))
                     {
                         var cellController = this.GridController.GetCellController(cell);
-                        cellController.Cell.Color = null;
                         cellController.SetColor(CellColors.Empty).StartCoroutine();
 
                         delay += 0.1f;
                     }
-                    ColorsPrpvider.Instance.Next();
+                    ColorsPropvider.Instance.Next();
                 }
 
                 this.SelectedCells.Clear();

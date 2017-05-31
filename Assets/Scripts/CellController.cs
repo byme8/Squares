@@ -17,14 +17,15 @@ namespace Squares
         public Subject<CellController> Selection;
         private Material material;
 
-        private void Start()
+        private void Awake()
         {
             this.material = this.GetComponent<MeshRenderer>().material;
         }
 
-        public IEnumerator SetColor(Color color)
+        public IEnumerator SetColor(Color color, float time = 0.2f)
         {
-            yield return this.material.Color(color, 0.2f, curve: Curves.SinusoidalIn);
+            this.Cell.Color = color;
+            yield return this.material.Color(color, time, curve: Curves.SinusoidalIn);
         }
 
         private void OnMouseDown()

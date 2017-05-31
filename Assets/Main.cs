@@ -15,10 +15,10 @@ public class Main : MonoBehaviour
     private void Start()
     {
         this.UserInputController.StartSelection();
-        ColorsPrpvider.Instance.Next();
-        ColorsPrpvider.Instance.Next();
+        ColorsPropvider.Instance.Next();
+        ColorsPropvider.Instance.Next();
 
-        GameController.Instance.GameOver.Subscribe(_ => this.Restart());
+        GameController.Instance.GameOver.Subscribe(_ => Debug.Log("Game over"));
 
         //var game = GameController.Instance;
         //game.MergedCells.Subscribe(cells =>
@@ -38,11 +38,11 @@ public class Main : MonoBehaviour
         //});
     }
 
-    private void Restart()
+    public void Restart()
     {
         this.UserInputController.StartSelection();
         this.GridController.Cleanup();
-        ColorsPrpvider.Instance.Next();
-        ColorsPrpvider.Instance.Next();
+        ColorsPropvider.Instance.Next();
+        ColorsPropvider.Instance.Next();
     }
 }

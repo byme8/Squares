@@ -8,7 +8,7 @@ using Utils;
 
 namespace Squares.Game
 {
-    public class ColorsPrpvider : Singletone<ColorsPrpvider>
+    public class ColorsPropvider : Singletone<ColorsPropvider>
     {
         private Subject<IEnumerable<Color>> newColors = new Subject<IEnumerable<Color>>();
 
@@ -32,7 +32,7 @@ namespace Squares.Game
             private set;
         }
 
-        public ColorsPrpvider()
+        public ColorsPropvider()
         {
         }
 

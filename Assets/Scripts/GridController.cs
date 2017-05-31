@@ -59,15 +59,15 @@ namespace Squares
                     this.cellControllers.Add(cellController.Cell, cellController);
                 }
             }
+
+            this.Cleanup(0);
         }
 
-        public void Cleanup()
+        public void Cleanup(float time = 0.2f)
         {
             foreach (var cellController in this.cellControllers.Values)
             {
-                cellController.GetComponent<MeshRenderer>().material.
-                    Color(CellColors.Empty, 0.5f, 1, Curves.ExponentialOut).
-                    StartCoroutine();
+                cellController.SetColor(CellColors.Empty, time).StartCoroutine();
             }
         }
 
