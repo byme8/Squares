@@ -6,43 +6,43 @@ using UniRx;
 using Squares.Game;
 using Squares;
 using Squares.UserInput;
+using Squares.UI;
+using Tweens;
+using CoroutinesEx;
 
 public class Main : MonoBehaviour
 {
     public UserInputController UserInputController;
     public GridController GridController;
+    public RestartView RestartView;
 
     private void Start()
     {
         this.UserInputController.StartSelection();
         ColorsPropvider.Instance.Next();
         ColorsPropvider.Instance.Next();
+        var renderers = this.RestartView.GetComponentsInChildren<CanvasRenderer>();
+        renderers.Select(o => o.Opacity(0, 0).StartCoroutine()).ToArray();
 
-        GameController.Instance.GameOver.Subscribe(_ => Debug.Log("Game over"));
+        GameController.Instance.GameOver.Subscribe(_ =>
+        {
+            this.RestartView.Enable();
+            this.RestartView.GetComponentsInChildren<CanvasRenderer>().Select(o => o.Opacity(1, 1f)).AsParallel().StartCoroutine();
+            this.UserInputController.StopSelection();
+        });
 
-        //var game = GameController.Instance;
-        //game.MergedCells.Subscribe(cells =>
-        //{
-        //    Debug.Log(string.Join(",", cells.
-        //                    Select(o =>
-        //                        string.Format("[{0}, {1}]", o.Row, o.Column)).ToArray()));
-        //});
-
-        //game.Cells[1][1].Color = Color.blue;
-        //game.Cells[1][2].Color = Color.blue;
-        //game.Cells[1][3].Color = Color.blue;
-        //game.Cells[3][2].Color = Color.blue;
-        //game.Turn(new[]
-        //{
-        //    new Cell(2, 2) { Color = Color.blue },
-        //});
+        this.RestartView.Restart.Subscribe(_ => this.Restart().StartCoroutine());
     }
 
-    public void Restart()
+    public IEnumerator Restart()
     {
         this.UserInputController.StartSelection();
         this.GridController.Cleanup();
         ColorsPropvider.Instance.Next();
         ColorsPropvider.Instance.Next();
+        ScoreManager.Instance.Score.Value = 0;
+
+        yield return this.RestartView.GetComponentsInChildren<CanvasRenderer>().Select(o => o.Opacity(0, 1f)).AsParallel();
+        this.RestartView.Disable();
     }
 }

@@ -55,6 +55,8 @@ namespace Squares.Game
 
         public GameController()
         {
+            this.mergedCells = new Subject<IEnumerable<Cell>>();
+            this.gameOver = new Subject<Unit>();
         }
 
         public void SetSize(int height, int width)
@@ -69,9 +71,6 @@ namespace Squares.Game
                            new Cell(row, column)).
                         ToArray()).
                 ToArray();
-
-            this.mergedCells = new Subject<IEnumerable<Cell>>();
-            this.gameOver = new Subject<Unit>();
         }
 
         public IEnumerable<Cell> Turn(IEnumerable<Cell> cells)

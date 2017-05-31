@@ -56,6 +56,11 @@ namespace Squares.UserInput
             });
         }
 
+        public void StopSelection()
+        {
+            this.processor.Dispose();
+        }
+
         private void Awake()
         {
             ColorsPropvider.Instance.NewColors.Subscribe(colors =>
