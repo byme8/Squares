@@ -15,8 +15,8 @@ public class Main : MonoBehaviour
     private void Start()
     {
         this.UserInputController.StartSelection();
-        ColorsManager.Instance.Next();
-        ColorsManager.Instance.Next();
+        ColorsPrpvider.Instance.Next();
+        ColorsPrpvider.Instance.Next();
 
         GameController.Instance.GameOver.Subscribe(_ => this.Restart());
 
@@ -42,7 +42,7 @@ public class Main : MonoBehaviour
     {
         this.UserInputController.StartSelection();
         this.GridController.Cleanup();
-        ColorsManager.Instance.Next();
-        ColorsManager.Instance.Next();
+        ColorsPrpvider.Instance.Next();
+        ColorsPrpvider.Instance.Next();
     }
 }

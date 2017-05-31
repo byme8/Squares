@@ -8,7 +8,7 @@ using Utils;
 
 namespace Squares.Game
 {
-    public class ColorsManager : Singletone<ColorsManager>
+    public class ColorsPrpvider : Singletone<ColorsPrpvider>
     {
         private Subject<IEnumerable<Color>> newColors = new Subject<IEnumerable<Color>>();
 
@@ -32,14 +32,22 @@ namespace Squares.Game
             private set;
         }
 
-        public ColorsManager()
+        public ColorsPrpvider()
         {
         }
+
+        private ValueWithProbability<int>[] sizeProbabilities = new[] 
+        {
+            new ValueWithProbability<int>(0.15f, 1),
+            new ValueWithProbability<int>(0.35f, 2),
+            new ValueWithProbability<int>(0.35f, 3),
+            new ValueWithProbability<int>(0.15f, 4),
+        };
 
         public void Next()
         {
             this.Colors = this.NextColors;
-            this.NextColors = Enumerable.Range(0, 3).Select(_ => CellColors.GridColors.Random()).ToArray();
+            this.NextColors = Enumerable.Range(0, this.sizeProbabilities.Random()).Select(_ => CellColors.GridColors.Random()).ToArray();
 
             if (this.Colors == null)
                 return;

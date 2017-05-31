@@ -17,7 +17,7 @@ namespace Squares.UI
 
         private void Awake()
         {
-            ColorsManager.Instance.NewColors.Subscribe(colors =>
+            ColorsPrpvider.Instance.NewColors.Subscribe(colors =>
             {
                 this.NewColorsCoroutine(colors).StartCoroutine();
             });
@@ -34,12 +34,12 @@ namespace Squares.UI
 
         public void ShowHint()
         {
-            this.HintColors.SetColors(ColorsManager.Instance.NextColors);
+            this.HintColors.SetColors(ColorsPrpvider.Instance.NextColors);
         }
 
         public void Skip()
         {
-            ColorsManager.Instance.Next();
+            ColorsPrpvider.Instance.Next();
         }
     }
 }
