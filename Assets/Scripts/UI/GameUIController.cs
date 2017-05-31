@@ -12,12 +12,22 @@ namespace Squares.UI
 {
     public class GameUIController : MonoBehaviour
     {
-        public ColorsView MainColors;
         public ColorsView HintColors;
+        public ColorsView MainColors;
+
+        public void ShowHint()
+        {
+            this.HintColors.SetColors(ColorsProvider.Instance.NextColors);
+        }
+
+        public void Skip()
+        {
+            ColorsProvider.Instance.Next();
+        }
 
         private void Awake()
         {
-            ColorsPropvider.Instance.NewColors.Subscribe(colors =>
+            ColorsProvider.Instance.NewColors.Subscribe(colors =>
             {
                 this.NewColorsCoroutine(colors).StartCoroutine();
             });
@@ -30,16 +40,6 @@ namespace Squares.UI
             yield return this.HintColors.Hide();
 
             this.MainColors.SetColors(colors);
-        }
-
-        public void ShowHint()
-        {
-            this.HintColors.SetColors(ColorsPropvider.Instance.NextColors);
-        }
-
-        public void Skip()
-        {
-            ColorsPropvider.Instance.Next();
         }
     }
 }

@@ -8,7 +8,7 @@ using Utils;
 
 namespace Squares.Game
 {
-    public class ColorsPropvider : Singletone<ColorsPropvider>
+    public class ColorsProvider : Singletone<ColorsProvider>
     {
         private Subject<IEnumerable<Color>> newColors = new Subject<IEnumerable<Color>>();
 
@@ -32,7 +32,7 @@ namespace Squares.Game
             private set;
         }
 
-        public ColorsPropvider()
+        public ColorsProvider()
         {
         }
 
@@ -53,6 +53,14 @@ namespace Squares.Game
                 return;
 
             this.newColors.OnNext(this.Colors);
+        }
+
+        public void Restore(Color[] colors, Color[] nextColors)
+        {
+            this.Colors = colors;
+            this.NextColors = nextColors;
+
+            this.newColors.OnNext(colors);
         }
     }
 }

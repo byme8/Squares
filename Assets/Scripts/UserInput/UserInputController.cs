@@ -63,7 +63,7 @@ namespace Squares.UserInput
 
         private void Awake()
         {
-            ColorsPropvider.Instance.NewColors.Subscribe(colors =>
+            ColorsProvider.Instance.NewColors.Subscribe(colors =>
             {
                 this.currentColors = colors.ToArray();
             });
@@ -91,7 +91,7 @@ namespace Squares.UserInput
 
                         delay += 0.1f;
                     }
-                    ColorsPropvider.Instance.Next();
+                    ColorsProvider.Instance.Next();
                 }
 
                 this.SelectedCells.Clear();

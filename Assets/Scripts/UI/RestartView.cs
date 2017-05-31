@@ -9,7 +9,7 @@ namespace Squares.UI
 {
     public class RestartView : MonoBehaviour
     {
-        private Subject<Unit> restart;
+        private Subject<Unit> restart = new Subject<Unit>();
 
         public IObservable<Unit> Restart
         {
@@ -17,11 +17,6 @@ namespace Squares.UI
             {
                 return this.restart.AsObservable();
             }
-        }
-
-        private void Start()
-        {
-            this.restart = new Subject<Unit>();
         }
 
         public void RestartClick()

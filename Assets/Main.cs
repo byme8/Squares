@@ -9,6 +9,7 @@ using Squares.UserInput;
 using Squares.UI;
 using Tweens;
 using CoroutinesEx;
+using Squares.Saving;
 
 public class Main : MonoBehaviour
 {
@@ -18,11 +19,17 @@ public class Main : MonoBehaviour
 
     private void Start()
     {
+        if (!GameSaver.Instance.Load())
+        {
+            ColorsProvider.Instance.Next();
+            ColorsProvider.Instance.Next();
+            GameController.Instance.SetSize(5, 5);
+        }
+
         this.UserInputController.StartSelection();
-        ColorsPropvider.Instance.Next();
-        ColorsPropvider.Instance.Next();
         var renderers = this.RestartView.GetComponentsInChildren<CanvasRenderer>();
         renderers.Select(o => o.Opacity(0, 0).StartCoroutine()).ToArray();
+        this.GridController.CreateGrid();
 
         GameController.Instance.GameOver.Subscribe(_ =>
         {
@@ -38,11 +45,24 @@ public class Main : MonoBehaviour
     {
         this.UserInputController.StartSelection();
         this.GridController.Cleanup();
-        ColorsPropvider.Instance.Next();
-        ColorsPropvider.Instance.Next();
+        ColorsProvider.Instance.Next();
+        ColorsProvider.Instance.Next();
         ScoreManager.Instance.Score.Value = 0;
 
         yield return this.RestartView.GetComponentsInChildren<CanvasRenderer>().Select(o => o.Opacity(0, 1f)).AsParallel();
         this.RestartView.Disable();
     }
+
+#if UNITY_ANDROID
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+            GameSaver.Instance.Save();
+    }
+#else
+    private void OnApplicationQuit()
+    {
+        GameSaver.Instance.Save();
+    }
+#endif
 }

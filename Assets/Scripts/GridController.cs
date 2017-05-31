@@ -20,7 +20,7 @@ namespace Squares
 
         const float Space = 1.1f;
 
-        private Dictionary<Cell, CellController> cellControllers;
+        private Dictionary<Cell, CellController> cellControllers = new Dictionary<Cell, CellController>();
 
         private Subject<CellController> cellSelection = new Subject<CellController>();
 
@@ -32,12 +32,15 @@ namespace Squares
             }
         }
 
-        public CellController GetCellController(Cell cell)
+        public void Cleanup(float time = 0.2f)
         {
-            return this.cellControllers.First(o => o.Key == cell).Value;
+            foreach (var cellController in this.cellControllers.Values)
+            {
+                cellController.SetColor(CellColors.Empty, time).StartCoroutine();
+            }
         }
 
-        private void CreateGrid()
+        public void CreateGrid()
         {
             var verticalShift = this.Height / Space / 2.0f;
             var horizontalShift = this.Width / Space / 2.0f;
@@ -59,28 +62,15 @@ namespace Squares
                     this.cellControllers.Add(cellController.Cell, cellController);
                 }
             }
-
-            this.Cleanup(0);
         }
 
-        public void Cleanup(float time = 0.2f)
+        public CellController GetCellController(Cell cell)
         {
-            foreach (var cellController in this.cellControllers.Values)
-            {
-                cellController.SetColor(CellColors.Empty, time).StartCoroutine();
-            }
+            return this.cellControllers.First(o => o.Key == cell).Value;
         }
-
         private void OnDestroy()
         {
             this.cellSelection.Dispose();
-        }
-
-        private void Start()
-        {
-            GameController.Instance.SetSize(this.Height, this.Width);
-            this.cellControllers = new Dictionary<Cell, CellController>();
-            this.CreateGrid();
         }
     }
 }

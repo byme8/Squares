@@ -71,6 +71,10 @@ namespace Squares.Game
                            new Cell(row, column)).
                         ToArray()).
                 ToArray();
+
+            foreach (var row in this.Cells.Skip(1).Take(height))
+                foreach (var cell in row.Skip(1).Take(width))
+                    cell.Color = CellColors.Empty;
         }
 
         public IEnumerable<Cell> Turn(IEnumerable<Cell> cells)
@@ -96,6 +100,11 @@ namespace Squares.Game
 
             this.mergedCells.OnNext(allUniqueMergedCells);
             return allUniqueMergedCells;
+        }
+
+        public void Restore(Cell[][] cells)
+        {
+            this.Cells = cells;
         }
 
         private IEnumerable<Cell> CheckColors(Cell cell, IEnumerable<Cell> previouslyCells, int limit = 10, int limitValue = 0)
@@ -137,7 +146,7 @@ namespace Squares.Game
         private void CheckGameOver()
         {
             var emptyCells = this.Cells.SelectMany(row => row.Where(o => o.Color == CellColors.Empty)).ToArray();
-            var limit = ColorsPropvider.Instance.NextColors.Length;
+            var limit = ColorsProvider.Instance.NextColors.Length;
             foreach (var cell in emptyCells)
             {
                 var mergedCells = this.CheckColors(cell, new[] { cell }, limit).Distinct().ToArray();
