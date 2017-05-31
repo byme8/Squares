@@ -18,7 +18,7 @@ namespace Tweens
             Curve curve)
         {
             if (curve == null)
-                curve = Curves.BackIn;
+                curve = Curves.SinusoidalIn;
 
             var timeSpent = 0.0f;
             while (timeSpent < time)
